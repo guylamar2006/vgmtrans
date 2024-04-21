@@ -74,7 +74,7 @@ bool CLIVGMRoot::Init() {
     else {
       for(size_t i = numColls; i < GetNumCollections(); ++i) {
         VGMColl* coll = vVGMColl[i];
-        string collName = *coll->GetName();
+        string collName = coll->name;
         auto it = collNameMap.find(collName);
         pair<size_t, fs::path> p = make_pair(i, infile);
         if (it == collNameMap.end()) {
@@ -124,7 +124,7 @@ bool CLIVGMRoot::Init() {
           }
           // update collection name to be unique
           string newCollName = collNameIt->first + suffix;
-          vVGMColl[p.first]->SetName(&newCollName);
+          vVGMColl[p.first]->SetName(newCollName);
         }
       }
     }
@@ -138,21 +138,21 @@ bool CLIVGMRoot::Init() {
 bool CLIVGMRoot::ExportAllCollections() {
   bool success = true;
   for (VGMColl* coll : vVGMColl) {
-    string collName = *coll->GetName();
+    string collName = coll->name;
     success &= ExportCollection(coll);
   }
   return success;
 }
 
 bool CLIVGMRoot::ExportCollection(VGMColl* coll) {
-    string collName = *coll->GetName();
+    string collName = coll->name;
     cout << "Exporting: " << collName << endl;
     return SaveMidi(coll) & SaveSF2(coll) & SaveDLS(coll);
 }
 
 bool CLIVGMRoot::SaveMidi(VGMColl* coll) {
   if (coll->seq != nullptr) {
-    string collName = *coll->GetName();
+    string collName = coll->name;
     string filepath = UI_GetSaveFilePath(collName, "mid");
     if (!coll->seq->SaveAsMidi(filepath)) {
       pRoot->AddLogItem(new LogItem(std::string("Failed to save MIDI file"),
@@ -165,7 +165,7 @@ bool CLIVGMRoot::SaveMidi(VGMColl* coll) {
 }
 
 bool CLIVGMRoot::SaveSF2(VGMColl* coll) {
-  string collName = *coll->GetName();
+  string collName = coll->name;
   string filepath = UI_GetSaveFilePath(collName, "sf2");
   SF2File *sf2file = coll->CreateSF2File();
   bool success = false;
@@ -186,7 +186,7 @@ bool CLIVGMRoot::SaveSF2(VGMColl* coll) {
 }
 
 bool CLIVGMRoot::SaveDLS(VGMColl* coll) {
-  string collName = *coll->GetName();
+  string collName = coll->name;
   string filepath = UI_GetSaveFilePath(collName, "dls");
   DLSFile dlsfile;
   bool success = false;

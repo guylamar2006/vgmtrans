@@ -12,14 +12,13 @@ VGMFile::VGMFile(FileType fileType,
                  RawFile *theRawFile,
                  uint32_t offset,
                  uint32_t length,
-                 string theName)
-    : VGMContainerItem(this, offset, length),
+                 string name)
+    : VGMContainerItem(this, offset, length, name),
       rawfile(theRawFile),
       bUsingRawFile(true),
       bUsingCompressedLocalData(false),
       format(fmt),
       file_type(fileType),
-      name(theName),
       id(-1) {
 }
 
@@ -77,11 +76,6 @@ Format *VGMFile::GetFormat() {
 
 const string &VGMFile::GetFormatName() {
   return format;
-}
-
-
-const string *VGMFile::GetName(void) const {
-  return &name;
 }
 
 void VGMFile::AddCollAssoc(VGMColl *coll) {

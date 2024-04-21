@@ -275,7 +275,7 @@ public:
               } else {
                 std::string suggestedFileName;
                 if constexpr (has_getname<T>::value) {
-                  suggestedFileName = ConvertToSafeFileName(*(*items)[0]->GetName());
+                  suggestedFileName = ConvertToSafeFileName(*(*items)[0]->name);
                 }
                 auto fileExtension = get<string>(propSpec.defaultValue);
                 auto path = OpenSaveFileDialog(suggestedFileName, fileExtension);

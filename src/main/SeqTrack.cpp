@@ -153,7 +153,7 @@ void SeqTrack::SetChannelAndGroupFromTrkNum(int theTrackNum) {
 
 void SeqTrack::AddInitialMidiEvents(int trackNum) {
   if (trackNum == 0)
-    pMidiTrack->AddSeqName(parentSeq->GetName()->c_str());
+    pMidiTrack->AddSeqName(parentSeq->name.c_str());
   ostringstream ssTrackName;
   ssTrackName << "Track: 0x" << std::hex << std::setfill('0') << std::setw(2) << std::uppercase << dwStartOffset
       << std::endl;

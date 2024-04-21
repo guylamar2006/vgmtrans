@@ -11,10 +11,8 @@
 
 using namespace std;
 
-VGMColl::VGMColl(string theName)
-    : VGMItem(),
-      name(theName),
-      seq(NULL) {
+VGMColl::VGMColl(string name)
+    : VGMItem(nullptr, 0, 0, name), seq(NULL) {
 }
 
 VGMColl::~VGMColl(void) {
@@ -35,8 +33,8 @@ const string *VGMColl::GetName(void) const {
   return &name;
 }
 
-void VGMColl::SetName(const string *newName) {
-  name = *newName;
+void VGMColl::SetName(const string& newName) {
+  name = newName;
 }
 
 VGMSeq *VGMColl::GetSeq(void) {

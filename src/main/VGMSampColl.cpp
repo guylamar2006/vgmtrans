@@ -93,7 +93,7 @@ VGMSamp *VGMSampColl::AddSamp(uint32_t offset, uint32_t length, uint32_t dataOff
 bool VGMSampColl::SaveAllAsWav(const string& dirpath) {
   if (dirpath.length() != 0) {
     for (uint32_t i = 0; i < samples.size(); i++) {
-      string filename = ConvertToSafeFileName(*GetName()) + " - " + ConvertToSafeFileName(samples[i]->name) + ".wav";
+      string filename = ConvertToSafeFileName(name) + " - " + ConvertToSafeFileName(samples[i]->name) + ".wav";
       string filepath = dirpath + "/" + filename;
       samples[i]->SaveAsWav(filepath);
     }

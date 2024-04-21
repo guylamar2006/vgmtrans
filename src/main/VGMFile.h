@@ -29,8 +29,6 @@ class VGMFile:
 
   virtual void AddToUI(VGMItem *parent, void *UI_specific);
 
-  const std::string *GetName(void) const;
-
   bool OnClose();
   bool OnSaveAsRaw(const std::string &filepath);
   bool OnSaveAllAsRaw();
@@ -122,7 +120,6 @@ class VGMFile:
   FileType file_type;
   const std::string &format;
   uint32_t id;
-  std::string name;
  public:
   RawFile *rawfile;
   std::list<VGMColl *> assocColls;

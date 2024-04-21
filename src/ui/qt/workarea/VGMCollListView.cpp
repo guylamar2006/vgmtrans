@@ -58,7 +58,7 @@ int VGMCollListViewModel::rowCount(const QModelIndex &) const {
 
 QVariant VGMCollListViewModel::data(const QModelIndex &index, int role) const {
   if (role == Qt::DisplayRole || role == Qt::EditRole) {
-    return QString::fromStdString(*qtVGMRoot.vVGMColl[index.row()]->GetName());
+    return QString::fromStdString(qtVGMRoot.vVGMColl[index.row()]->name);
   } else if (role == Qt::DecorationRole) {
     return VGMCollIcon();
   }
@@ -88,7 +88,7 @@ void VGMCollNameEditor::setModelData(QWidget *editor, QAbstractItemModel *model,
                                      const QModelIndex &index) const {
   auto *line_edit = qobject_cast<QLineEdit *>(editor);
   auto new_name = line_edit->text().toStdString();
-  qtVGMRoot.vVGMColl[index.row()]->SetName(&new_name);
+  qtVGMRoot.vVGMColl[index.row()]->SetName(new_name);
   model->dataChanged(index, index);
 }
 

@@ -131,7 +131,7 @@ public:
       auto specificFile = dynamic_cast<TSavable*>(file);
       if (specificFile) {
         auto fileExtension = (GetExtension() == "") ? "" : (string(".") + GetExtension());
-        fs::path filePath = path / fs::path(*file->GetName() + fileExtension);
+        fs::path filePath = path / fs::path(file->name + fileExtension);
         Save(filePath.generic_string(), specificFile);
       }
     }

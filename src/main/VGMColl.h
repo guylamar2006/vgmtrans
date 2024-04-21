@@ -19,7 +19,7 @@ class VGMColl
 
   void RemoveFileAssocs();
   const std::string *GetName(void) const;
-  void SetName(const std::string *newName);
+  void SetName(const std::string& newName);
   VGMSeq *GetSeq();
   void UseSeq(VGMSeq *theSeq);
   void AddInstrSet(VGMInstrSet *theInstrSet);
@@ -47,7 +47,4 @@ class VGMColl
  protected:
   void UnpackSampColl(DLSFile &dls, VGMSampColl *sampColl, std::vector<VGMSamp *> &finalSamps);
   void UnpackSampColl(SynthFile &synthfile, VGMSampColl *sampColl, std::vector<VGMSamp *> &finalSamps);
-
- protected:
-  std::string name;
 };

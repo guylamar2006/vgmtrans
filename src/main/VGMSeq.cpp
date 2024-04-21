@@ -183,7 +183,7 @@ void VGMSeq::LoadTracksMain(long stopTime) {
       // check time limit
       if (time >= stopTime) {
         if (readMode == READMODE_ADD_TO_UI) {
-          string itemName = *this->GetName() + " - Abort loading tracks by time limit.";
+          string itemName = this->name + " - Abort loading tracks by time limit.";
           pRoot->AddLogItem(new LogItem(itemName.c_str(), LOG_LEVEL_WARN, "VGMSeq"));
         }
 

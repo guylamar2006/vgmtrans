@@ -296,7 +296,7 @@ bool VGMRoot::SaveAllAsRaw() {
     for (uint32_t i = 0; i < vVGMFile.size(); i++) {
       bool result;
       VGMFile *file = vVGMFile[i];
-      fs::path filepath = dirpath / fs::path(*file->GetName());
+      fs::path filepath = dirpath / fs::path(file->name);
       uint8_t *buf = new uint8_t[file->unLength];        //create a buffer the size of the file
       file->GetBytes(file->dwOffset, file->unLength, buf);
       result = UI_WriteBufferToFile(filepath.string(), buf, file->unLength);
