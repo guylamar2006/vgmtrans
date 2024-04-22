@@ -41,6 +41,7 @@ public slots:
 
 private:
   MdiArea(QWidget *parent = nullptr);
+  void keyPressEvent(QKeyEvent *) override;
   void ensureMaximizedSubWindow(QMdiSubWindow *window);
   std::unordered_map<VGMFile *, QMdiSubWindow *> fileToWindowMap;
   std::unordered_map<QMdiSubWindow *, VGMFile *> windowToFileMap;

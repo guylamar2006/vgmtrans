@@ -7,6 +7,7 @@
 #include "MdiArea.h"
 
 #include <QTabBar>
+#include <QKeyEvent>
 #include <VGMFile.h>
 #include "VGMFileView.h"
 #include "Helpers.h"
@@ -83,6 +84,22 @@ void MdiArea::onSubWindowActivated(QMdiSubWindow *window) {
     if (it != windowToFileMap.end()) {
       VGMFile *file = it->second;
       emit vgmFileSelected(file);
+    }
+  }
+}
+
+void MdiArea::keyPressEvent(QKeyEvent* event) {
+  QMdiArea::keyPressEvent(event);
+
+  // Handle MacOS shortcut for switching tabs
+  if ((event->modifiers() & Qt::ShiftModifier) && (event->modifiers() & Qt::ControlModifier)) {
+    switch (event->key()) {
+      case Qt::Key_BracketLeft:
+        this->activatePreviousSubWindow();
+        break;
+      case Qt::Key_BracketRight:
+        this->activateNextSubWindow();
+        break;
     }
   }
 }
