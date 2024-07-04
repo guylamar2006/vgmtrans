@@ -105,10 +105,10 @@ CPS1OPMInstrSet::CPS1OPMInstrSet(RawFile *file,
       fmt_version(version) {
 }
 
-bool CPS1OPMInstrSet::GetInstrPointers() {
+bool CPS1OPMInstrSet::parseInstrPointers() {
   for (int i = 0; i < 128; ++i) {
     auto offset = dwOffset + (i * sizeof(CPS1OPMInstrData));
-    if (VGMFile::GetWord(offset) == 0 && VGMFile::GetWord(offset+4) == 0) {
+    if (VGMFile::readWord(offset) == 0 && VGMFile::readWord(offset+4) == 0) {
       break;
     }
 
@@ -148,9 +148,9 @@ std::string CPS1OPMInstrSet::generateOPMFile() {
   return output.str();
 }
 
-bool CPS1OPMInstrSet::SaveAsOPMFile(const std::string &filepath) {
+bool CPS1OPMInstrSet::saveAsOPMFile(const std::string &filepath) {
   auto content = generateOPMFile();
-  pRoot->UI_WriteBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+  pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
 
 //  SF2File *sf2file = NULL;
 
@@ -195,9 +195,9 @@ CPS1OPMInstr::CPS1OPMInstr(VGMInstrSet *instrSet,
     : VGMInstr(instrSet, offset, length, theBank, theInstrNum, name) {
 }
 
-bool CPS1OPMInstr::LoadInstr() {
+bool CPS1OPMInstr::loadInstr() {
 
-  this->GetBytes(dwOffset, sizeof(CPS1OPMInstrData), &opmData);
+  this->readBytes(dwOffset, sizeof(CPS1OPMInstrData), &opmData);
   return true;
 }
 

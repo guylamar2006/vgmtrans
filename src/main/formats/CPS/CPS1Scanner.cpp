@@ -61,7 +61,7 @@ void CPS1Scanner::loadCPS1(MAMEGame *gameentry, CPSFormatVer fmt_ver) {
   opmInstrset = new CPS1OPMInstrSet(programFile,
                                     fmt_ver, opm_instr_table_offset,
                                     instrset_name);
-  if (!opmInstrset->LoadVGMFile()) {
+  if (!opmInstrset->loadVGMFile()) {
     delete opmInstrset;
     opmInstrset = NULL;
   }

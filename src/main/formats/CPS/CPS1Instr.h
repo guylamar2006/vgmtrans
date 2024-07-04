@@ -55,8 +55,8 @@ public:
                  const std::string& name);
   ~CPS1OPMInstrSet() override = default;
 
-  bool GetInstrPointers() override;
-  bool SaveAsOPMFile(const std::string &filepath);
+  bool parseInstrPointers() override;
+  bool saveAsOPMFile(const std::string &filepath);
 
 public:
   CPSFormatVer fmt_version;
@@ -187,7 +187,7 @@ public:
                uint32_t theInstrNum,
                const std::string& name);
   ~CPS1OPMInstr() override = default;
-  bool LoadInstr() override;
+  bool loadInstr() override;
 //protected:
 //  CPSFormatVer GetFormatVer() { return ((CPS1OPMInstr *) parInstrSet)->fmt_version; }
 
