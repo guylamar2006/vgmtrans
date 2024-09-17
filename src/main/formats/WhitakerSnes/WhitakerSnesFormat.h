@@ -19,7 +19,7 @@ enum WhitakerSnesVersion {
   WHITSNES_RD1,                // Nintendo RD1 (e.g. Super Metroid, Earthbound)
   WHITSNES_RD2,                // Nintendo RD2 (e.g. Marvelous)
   WHITSNES_HAL,                // HAL Laboratory games (e.g. Kirby series)
-  WHITSNES_KONAMI,             // Old Konami games (e.g. Gradius III, Castlevania IV, Legend of the Mystical Ninja)
+  WHITSNES_AKKLAIM,             // Old Akklaim games (e.g. Gradius III, Castlevania IV, Legend of the Mystical Ninja)
   WHITSNES_LEMMINGS,           // Lemmings
   WHITSNES_INTELLI_FE3,        // Fire Emblem 3
   WHITSNES_INTELLI_TA,         // Tetris Attack
