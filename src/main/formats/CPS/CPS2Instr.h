@@ -2,11 +2,10 @@
 #include "VGMInstrSet.h"
 #include "VGMSampColl.h"
 #include "VGMMiscFile.h"
-#include "CPS2Format.h"
 
 class CPS2Instr;
 
-enum CPSFormatVer: uint8_t;
+enum CPS2FormatVer: uint8_t;
 
 // ex: Punisher
 struct qs_prog_info_ver_101 {
@@ -202,7 +201,7 @@ public:
 class CPS2InstrSet : public VGMInstrSet {
 public:
   CPS2InstrSet(RawFile *file,
-              CPSFormatVer fmt_version,
+              CPS2FormatVer fmt_version,
               uint32_t offset,
               int numInstrBanks,
               CPSSampleInfoTable *sampInfoTable,
@@ -214,16 +213,16 @@ public:
   bool parseInstrPointers() override;
 
 public:
-  CPSFormatVer fmt_version{VER_UNDEFINED};
+  CPS2FormatVer fmt_version{CPS2_VERSION_UNDEFINED};
   uint32_t num_instr_banks{};
   CPSSampleInfoTable *sampInfoTable;
   CPSArticTable *articTable;
 };
 
 
-// ***********
+// *********
 // CPS2Instr
-// ***********
+// *********
 
 class CPS2Instr : public VGMInstr {
 public:
@@ -236,7 +235,7 @@ public:
   ~CPS2Instr() override = default;
   bool loadInstr() override;
 protected:
-  CPSFormatVer formatVersion() const { return (static_cast<CPS2InstrSet*>(parInstrSet))->fmt_version; }
+  CPS2FormatVer formatVersion() const { return (static_cast<CPS2InstrSet*>(parInstrSet))->fmt_version; }
 
 protected:
   uint8_t attack_rate{};
