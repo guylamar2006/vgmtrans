@@ -4,7 +4,7 @@
 #include "SeqEvent.h"
 #include "WhittakerSnesFormat.h"
 
-#define RARESNES_RPTNESTMAX 8
+#define WHITTSNES_RPTNESTMAX 8
 
 enum WhittakerSnesSeqEventType {
   //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
@@ -131,9 +131,9 @@ class WhittakerSnesTrack
 
  private:
   uint8_t rptNestLevel;                          // nest level for repeat-subroutine command
-  uint8_t rptCount[RARESNES_RPTNESTMAX];         // repeat count for repeat-subroutine command
-  uint32_t rptStart[RARESNES_RPTNESTMAX];        // loop start address for repeat-subroutine command
-  uint32_t rptRetnAddr[RARESNES_RPTNESTMAX];     // return address for repeat-subroutine command
+  uint8_t rptCount[WHITTSNES_RPTNESTMAX];         // repeat count for repeat-subroutine command
+  uint32_t rptStart[WHITTSNES_RPTNESTMAX];        // loop start address for repeat-subroutine command
+  uint32_t rptRetnAddr[WHITTSNES_RPTNESTMAX];     // return address for repeat-subroutine command
   uint16_t spcNotePitch;                        // SPC700 pitch register value (0000-3fff), converter will need it for pitch slide
   int8_t spcTranspose;                            // transpose (compatible with actual engine)
   int8_t spcTransposeAbs;                         // transpose (without relative change)

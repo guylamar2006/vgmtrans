@@ -50,7 +50,7 @@ void WhittakerSnesSeq::resetVars(void) {
 
   midiReverb = 40;
   switch (version) {
-    case RARESNES_DKC:
+    case WHITTSNES_DKC:
       timerFreq = 0x3c;
       break;
     default:
@@ -127,7 +127,7 @@ void WhittakerSnesSeq::loadEventMap() {
   EventMap[0x2c] = EVENT_LONGDUROFF;
 
   switch (version) {
-    case RARESNES_DKC:
+    case WHITTSNES_DKC:
       EventMap[0x1c] = EVENT_SETVOLADSRPRESET1;
       EventMap[0x1d] = EVENT_SETVOLADSRPRESET2;
       EventMap[0x1e] = EVENT_SETVOLADSRPRESET3;
@@ -147,7 +147,7 @@ void WhittakerSnesSeq::loadEventMap() {
       EventMap[0x30] = EVENT_TREMOLOOFF;
       break;
 
-    case RARESNES_KI:
+    case WHITTSNES_KI:
       //removed common events
       EventMap.erase(0x0c);
       EventMap.erase(0x0d);
@@ -177,7 +177,7 @@ void WhittakerSnesSeq::loadEventMap() {
       //EventMap[0x30] = null;
       break;
 
-    case RARESNES_DKC2:
+    case WHITTSNES_DKC2:
       //removed common events
       EventMap.erase(0x11);
 
@@ -200,7 +200,7 @@ void WhittakerSnesSeq::loadEventMap() {
       EventMap[0x32] = EVENT_ECHOOFF; // duplicated
       break;
 
-    case RARESNES_WNRN:
+    case WHITTSNES_WNRN:
       //removed common events
       EventMap.erase(0x19);
       EventMap.erase(0x1a);
@@ -496,7 +496,7 @@ bool WhittakerSnesTrack::readEvent(void) {
                         CLR_LOOP,
                         ICON_STARTREP);
 
-        if (rptNestLevel == RARESNES_RPTNESTMAX) {
+        if (rptNestLevel == WHITTSNES_RPTNESTMAX) {
           L_ERROR("Subroutine nest level overflow");
           bContinue = false;
           break;
@@ -522,7 +522,7 @@ bool WhittakerSnesTrack::readEvent(void) {
                         CLR_LOOP,
                         ICON_STARTREP);
 
-        if (rptNestLevel == RARESNES_RPTNESTMAX) {
+        if (rptNestLevel == WHITTSNES_RPTNESTMAX) {
           L_ERROR("Subroutine nest level overflow");
           bContinue = false;
           break;

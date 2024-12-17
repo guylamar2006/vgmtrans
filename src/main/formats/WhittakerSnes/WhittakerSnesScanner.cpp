@@ -118,7 +118,7 @@ void WhittakerSnesScanner::scan(RawFile *file, void *info) {
 }
 
 void WhittakerSnesScanner::searchForWhittakerSnesFromARAM(RawFile *file) {
-  WhittakerSnesVersion version = RARESNES_NONE;
+  WhittakerSnesVersion version = WHITTSNES_NONE;
   uint32_t ofsSongLoadASM;
   uint32_t ofsVCmdExecASM;
   uint32_t addrSeqHeader;
@@ -140,16 +140,16 @@ void WhittakerSnesScanner::searchForWhittakerSnesFromARAM(RawFile *file) {
     addrVCmdTable = file->readShort(ofsVCmdExecASM + 10);
     if (file->readShort(addrVCmdTable + (0x0c * 2)) != 0) {
       if (file->readShort(addrVCmdTable + (0x11 * 2)) != 0) {
-        version = RARESNES_WNRN;
+        version = WHITTSNES_WNRN;
       } else {
-        version = RARESNES_DKC2;
+        version = WHITTSNES_DKC2;
       }
     } else {
-      version = RARESNES_KI;
+      version = WHITTSNES_KI;
     }
   } else if (file->searchBytePattern(ptnVCmdExecDKC, ofsVCmdExecASM)) {
     addrVCmdTable = file->readShort(ofsVCmdExecASM + 12);
-    version = RARESNES_DKC;
+    version = WHITTSNES_DKC;
   } else {
     return;
   }
