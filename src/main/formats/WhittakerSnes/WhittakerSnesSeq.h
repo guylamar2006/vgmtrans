@@ -1,10 +1,10 @@
 #pragma once
 #include "VGMMultiSectionSeq.h"
 #include "SeqTrack.h"
-#include "NinSnesFormat.h"
-#include "NinSnesScanner.h"
+#include "WhittakerSnesFormat.h"
+#include "WhittakerSnesScanner.h"
 
-enum NinSnesSeqEventType {
+enum WhittakerSnesSeqEventType {
   //start enum at 1 because if map[] look up fails, it returns 0, and we don't want that to get confused with a legit event
   EVENT_UNKNOWN0 = 1,
   EVENT_UNKNOWN1,
@@ -85,9 +85,9 @@ enum NinSnesSeqEventType {
   EVENT_QUINTET_ADSR,
 };
 
-class NinSnesTrackSharedData {
+class WhittakerSnesTrackSharedData {
  public:
-  NinSnesTrackSharedData();
+  WhittakerSnesTrackSharedData();
 
   virtual void resetVars();
 
@@ -104,17 +104,17 @@ class NinSnesTrackSharedData {
   uint8_t konamiLoopCount;
 };
 
-class NinSnesSeq:
+class WhittakerSnesSeq:
     public VGMMultiSectionSeq {
  public:
-  NinSnesSeq(RawFile *file,
-             NinSnesVersion ver,
+  WhittakerSnesSeq(RawFile *file,
+             WhittakerSnesVersion ver,
              uint32_t offset,
              uint8_t percussion_base = 0,
              const std::vector<uint8_t> &theVolumeTable = std::vector<uint8_t>(),
              const std::vector<uint8_t> &theDurRateTable = std::vector<uint8_t>(),
-             std::string theName = "NinSnes Seq");
-  virtual ~NinSnesSeq();
+             std::string theName = "WhittakerSnes Seq");
+  virtual ~WhittakerSnesSeq();
 
   virtual bool parseHeader();
   virtual void resetVars();
@@ -126,15 +126,15 @@ class NinSnesSeq:
   uint16_t convertToAPUAddress(uint16_t offset);
   uint16_t getShortAddress(uint32_t offset);
 
-  NinSnesVersion version;
+  WhittakerSnesVersion version;
   uint8_t STATUS_END;
   uint8_t STATUS_NOTE_MIN;
   uint8_t STATUS_NOTE_MAX;
   uint8_t STATUS_PERCUSSION_NOTE_MIN;
   uint8_t STATUS_PERCUSSION_NOTE_MAX;
-  std::map<uint8_t, NinSnesSeqEventType> EventMap;
+  std::map<uint8_t, WhittakerSnesSeqEventType> EventMap;
 
-  NinSnesTrackSharedData sharedTrackData[8];
+  WhittakerSnesTrackSharedData sharedTrackData[8];
 
   std::vector<uint8_t> volumeTable;
   std::vector<uint8_t> durRateTable;
@@ -170,10 +170,10 @@ protected:
   uint8_t spcPercussionBaseInit;
 };
 
-class NinSnesSection
+class WhittakerSnesSection
     : public VGMSeqSection {
  public:
-  NinSnesSection(NinSnesSeq *parentFile, uint32_t offset = 0, uint32_t length = 0);
+  WhittakerSnesSection(WhittakerSnesSeq *parentFile, uint32_t offset = 0, uint32_t length = 0);
 
   virtual bool parseTrackPointers();
 
@@ -181,11 +181,11 @@ class NinSnesSection
   uint16_t getShortAddress(uint32_t offset);
 };
 
-class NinSnesTrack
+class WhittakerSnesTrack
     : public SeqTrack {
  public:
-  NinSnesTrack
-      (NinSnesSection *parentSection, uint32_t offset = 0, uint32_t length = 0, const std::string &theName = "NinSnes Track");
+  WhittakerSnesTrack
+      (WhittakerSnesSection *parentSection, uint32_t offset = 0, uint32_t length = 0, const std::string &theName = "WhittakerSnes Track");
 
   virtual void resetVars();
   virtual bool readEvent();
@@ -196,7 +196,7 @@ class NinSnesTrack
   uint8_t readPanTable(uint16_t pan);
   int8_t calculatePanValue(uint8_t pan, double &volumeScale, bool &reverseLeft, bool &reverseRight);
 
-  NinSnesSection *parentSection;
-  NinSnesTrackSharedData *shared;
+  WhittakerSnesSection *parentSection;
+  WhittakerSnesTrackSharedData *shared;
   bool available;
 };
