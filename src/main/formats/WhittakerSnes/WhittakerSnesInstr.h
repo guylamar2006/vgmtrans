@@ -2,26 +2,26 @@
 #include "VGMInstrSet.h"
 #include "VGMSampColl.h"
 #include "VGMRgn.h"
-#include "NinSnesFormat.h"
+#include "WhittakerSnesFormat.h"
 
 // ****************
-// NinSnesInstrSet
+// WhittakerSnesInstrSet
 // ****************
 
-class NinSnesInstrSet:
+class WhittakerSnesInstrSet:
     public VGMInstrSet {
  public:
-  NinSnesInstrSet(RawFile *file,
-                  NinSnesVersion ver,
+  WhittakerSnesInstrSet(RawFile *file,
+                  WhittakerSnesVersion ver,
                   uint32_t offset,
                   uint32_t spcDirAddr,
-                  const std::string &name = "NinSnesInstrSet");
-  virtual ~NinSnesInstrSet();
+                  const std::string &name = "WhittakerSnesInstrSet");
+  virtual ~WhittakerSnesInstrSet();
 
   virtual bool parseHeader();
   virtual bool parseInstrPointers();
 
-  NinSnesVersion version;
+  WhittakerSnesVersion version;
 
   uint16_t konamiTuningTableAddress;
   uint8_t konamiTuningTableSize;
@@ -32,28 +32,28 @@ class NinSnesInstrSet:
 };
 
 // *************
-// NinSnesInstr
+// WhittakerSnesInstr
 // *************
 
-class NinSnesInstr
+class WhittakerSnesInstr
     : public VGMInstr {
  public:
-  NinSnesInstr(VGMInstrSet *instrSet,
-               NinSnesVersion ver,
+  WhittakerSnesInstr(VGMInstrSet *instrSet,
+               WhittakerSnesVersion ver,
                uint32_t offset,
                uint32_t theBank,
                uint32_t theInstrNum,
                uint32_t spcDirAddr,
-               const std::string &name = "NinSnesInstr");
-  virtual ~NinSnesInstr();
+               const std::string &name = "WhittakerSnesInstr");
+  virtual ~WhittakerSnesInstr();
 
   virtual bool loadInstr();
 
   static bool isValidHeader
-      (RawFile *file, NinSnesVersion version, uint32_t addrInstrHeader, uint32_t spcDirAddr, bool validateSample);
-  static uint32_t expectedSize(NinSnesVersion version);
+      (RawFile *file, WhittakerSnesVersion version, uint32_t addrInstrHeader, uint32_t spcDirAddr, bool validateSample);
+  static uint32_t expectedSize(WhittakerSnesVersion version);
 
-  NinSnesVersion version;
+  WhittakerSnesVersion version;
 
   uint16_t konamiTuningTableAddress;
   uint8_t konamiTuningTableSize;
@@ -63,20 +63,20 @@ class NinSnesInstr
 };
 
 // ***********
-// NinSnesRgn
+// WhittakerSnesRgn
 // ***********
 
-class NinSnesRgn
+class WhittakerSnesRgn
     : public VGMRgn {
  public:
-  NinSnesRgn(NinSnesInstr *instr,
-             NinSnesVersion ver,
+  WhittakerSnesRgn(WhittakerSnesInstr *instr,
+             WhittakerSnesVersion ver,
              uint32_t offset,
              uint16_t konamiTuningTableAddress = 0,
              uint8_t konamiTuningTableSize = 0);
-  virtual ~NinSnesRgn();
+  virtual ~WhittakerSnesRgn();
 
   virtual bool loadRgn();
 
-  NinSnesVersion version;
+  WhittakerSnesVersion version;
 };
