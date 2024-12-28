@@ -7,12 +7,12 @@
 #include "Scanner.h"
 #include "BytePattern.h"
 
-class NinSnesScanner : public VGMScanner {
+class WhittakerSnesScanner : public VGMScanner {
  public:
-  explicit NinSnesScanner(Format* format) : VGMScanner(format) {}
+  explicit WhittakerSnesScanner(Format* format) : VGMScanner(format) {}
 
   virtual void scan(RawFile *file, void *info = 0);
-  void searchForNinSnesFromARAM(RawFile *file);
+  void searchForWhittakerSnesFromARAM(RawFile *file);
 
  private:
   static BytePattern ptnBranchForVcmd;
