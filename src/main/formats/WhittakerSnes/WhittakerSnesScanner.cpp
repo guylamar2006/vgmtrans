@@ -4,12 +4,12 @@
  * refer to the included LICENSE.txt file
  */
 
-#include "NinSnesInstr.h"
-#include "NinSnesSeq.h"
+#include "WhittakerSnesInstr.h"
+#include "WhittakerSnesSeq.h"
 #include "ScannerManager.h"
 
 namespace vgmtrans::scanners {
-ScannerRegistration<NinSnesScanner> s_nin_snes("NinSnes", {"spc"});
+ScannerRegistration<WhittakerSnesScanner> s_nin_snes("WhittakerSnes", {"spc"});
 }
 
 //; Yoshi's Island SPC
@@ -18,7 +18,7 @@ ScannerRegistration<NinSnesScanner> s_nin_snes("NinSnes", {"spc"});
 //0815: 90 05     bcc   $081c
 //0817: 3f 95 08  call  $0895             ; vcmds e0-ff
 //081a: 2f b9     bra   $07d5
-BytePattern NinSnesScanner::ptnBranchForVcmd(
+BytePattern WhittakerSnesScanner::ptnBranchForVcmd(
 	"\x68\xe0\x90\x05\x3f\x95\x08\x2f"
 	"\xb9"
 	,
@@ -36,7 +36,7 @@ BytePattern NinSnesScanner::ptnBranchForVcmd(
 //0c9a: fd        mov   y,a
 //0c9b: ae        pop   a
 //0c9c: 96 b2 0a  adc   a,$0ab2+y         ; vcmd lengths ($0af6) (skip vcmd by using oplens table)
-BytePattern NinSnesScanner::ptnBranchForVcmdReadahead(
+BytePattern WhittakerSnesScanner::ptnBranchForVcmdReadahead(
 	"\x68\xef\xf0\x29\x68\xe0\x90\x30"
 	"\x6d\xfd\xae\x96\xb2\x0a"
 	,
@@ -59,7 +59,7 @@ BytePattern NinSnesScanner::ptnBranchForVcmdReadahead(
 //08a2: f6 32 0b  mov   a,$0b32+y         ; vcmd length
 //
 // Variations: Bubsy in Claws Encounters of the Furred Kind
-BytePattern NinSnesScanner::ptnJumpToVcmd(
+BytePattern WhittakerSnesScanner::ptnJumpToVcmd(
 	"\x1c\xfd\xf6\x9d\x0a\x2d\xf6\x9c"
 	"\x0a\x2d\xdd\x5c\xfd\xf6\x32\x0b"
 	,
@@ -74,7 +74,7 @@ BytePattern NinSnesScanner::ptnJumpToVcmd(
 //0d41: 5d        mov   x,a
 //0d42: e8 00     mov   a,#$00
 //0d44: 1f dc 0e  jmp   ($0edc+x)
-BytePattern NinSnesScanner::ptnJumpToVcmdSMW(
+BytePattern WhittakerSnesScanner::ptnJumpToVcmdSMW(
 	"\x1c\x5d\xe8\x00\x1f\xdc\x0e"
 	,
 	"xxxxx??"
@@ -92,7 +92,7 @@ BytePattern NinSnesScanner::ptnJumpToVcmdSMW(
 //10cb: 96 e8 0e  adc   a,$0ee8+y
 //10ce: fd        mov   y,a
 //10cf: 2f e3     bra   $10b4
-BytePattern NinSnesScanner::ptnReadVcmdLengthSMW(
+BytePattern WhittakerSnesScanner::ptnReadVcmdLengthSMW(
 	"\x68\xda\x90\x0a\x6d\xfd\xae\x60"
 	"\x96\xe8\x0e\xfd\x2f\xe3"
 	,
@@ -113,7 +113,7 @@ BytePattern NinSnesScanner::ptnReadVcmdLengthSMW(
 //0809: fd        mov   y,a
 //080a: f6 f0 3f  mov   a,$3ff0+y
 //080d: d5 10 02  mov   $0210+x,a         ;   set per-note vol from low nybble
-BytePattern NinSnesScanner::ptnDispatchNoteYI(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteYI(
 	"\x2d\x9f\x28\x07\xfd\xf6\xe8\x3f"
 	"\xd5\x01\x02\xae\x28\x0f\xfd\xf6"
 	"\xf0\x3f\xd5\x10\x02"
@@ -134,7 +134,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteYI(
 //06e0: 3a 40     incw  $40
 //06e2: fd        mov   y,a
 //06e3: ae        pop   a
-BytePattern NinSnesScanner::ptnIncSectionPtr(
+BytePattern WhittakerSnesScanner::ptnIncSectionPtr(
 	"\x8d\x00\xf7\x40\x3a\x40\x2d\xf7"
 	"\x40\x3a\x40\xfd\xae"
 	,
@@ -150,7 +150,7 @@ BytePattern NinSnesScanner::ptnIncSectionPtr(
 //0b19: 60        clrc
 //0b1a: 98 00 10  adc   $10,#$00
 //0b1d: 98 05 11  adc   $11,#$05
-BytePattern NinSnesScanner::ptnLoadInstrTableAddress(
+BytePattern WhittakerSnesScanner::ptnLoadInstrTableAddress(
 	"\x8d\x06\xcf\xda\x10\x60\x98\x00"
 	"\x10\x98\x05\x11"
 	,
@@ -166,7 +166,7 @@ BytePattern NinSnesScanner::ptnLoadInstrTableAddress(
 //0d56: cf        mul   ya
 //0d57: 7a 14     addw  ya,$14
 //0d59: da 14     movw  $14,ya
-BytePattern NinSnesScanner::ptnLoadInstrTableAddressSMW(
+BytePattern WhittakerSnesScanner::ptnLoadInstrTableAddressSMW(
 	"\x8d\x05\x8f\x46\x14\x8f\x5f\x15"
 	"\xcf\x7a\x14\xda\x14"
 	,
@@ -178,7 +178,7 @@ BytePattern NinSnesScanner::ptnLoadInstrTableAddressSMW(
 //; Kirby Super Star SPC
 //071e: 8f 5d f2  mov   $f2,#$5d
 //0721: 8f 03 f3  mov   $f3,#$03          ; source dir = $0300
-BytePattern NinSnesScanner::ptnSetDIR(
+BytePattern WhittakerSnesScanner::ptnSetDIR(
 	"\x8f\x5d\xf2\x8f\x03\xf3"
 	,
 	"xxxx?x"
@@ -189,7 +189,7 @@ BytePattern NinSnesScanner::ptnSetDIR(
 //042c: e8 3c     mov   a,#$3c
 //042e: 8d 5d     mov   y,#$5d
 //0430: 3f fa 05  call  $05fa             ; source dir = $3c00
-BytePattern NinSnesScanner::ptnSetDIRYI(
+BytePattern WhittakerSnesScanner::ptnSetDIRYI(
 	"\xe8\x3c\x8d\x5d\x3f\xfa\x05"
 	,
 	"x?xxx??"
@@ -200,7 +200,7 @@ BytePattern NinSnesScanner::ptnSetDIRYI(
 //; default values for DSP regs
 //1295: db $7f,$7f,$00,$00,$2f,$60,$00,$00,$00,$80,$60,$02
 //12a1: db $0c,$1c,$2c,$3c,$6c,$0d,$2d,$3d,$4d,$5d,$6d,$7d
-BytePattern NinSnesScanner::ptnSetDIRSMW(
+BytePattern WhittakerSnesScanner::ptnSetDIRSMW(
 	"\x7f\x7f\x00\x00\x2f\x60\x00\x00\x00\x80\x60\x02"
 	"\x0c\x1c\x2c\x3c\x6c\x0d\x2d\x3d\x4d\x5d\x6d\x7d"
 	,
@@ -222,7 +222,7 @@ BytePattern NinSnesScanner::ptnSetDIRSMW(
 //0731: fd        mov   y,a
 //0732: ae        pop   a
 //0733: 7a 4b     addw  ya,$4b            ; add address base
-BytePattern NinSnesScanner::ptnIncSectionPtrGD3(
+BytePattern WhittakerSnesScanner::ptnIncSectionPtrGD3(
 	"\x8d\x00\xf7\x40\x3a\x40\x2d\xf7"
 	"\x40\xf0\x08\x3a\x40\xfd\xae\x7a"
 	"\x4b"
@@ -245,7 +245,7 @@ BytePattern NinSnesScanner::ptnIncSectionPtrGD3(
 //14be: 3a 4c     incw  $4c               ; read a word from section list ptr
 //14c0: 68 00     cmp   a,#$00
 //14c2: d0 28     bne   $14ec             ; >= $0100, load that section ($00/1)
-BytePattern NinSnesScanner::ptnIncSectionPtrYSFR(
+BytePattern WhittakerSnesScanner::ptnIncSectionPtrYSFR(
 	"\x8d\x00\xf7\x4c\xc4\x00\xc4\x4e"
 	"\x3a\x4c\xf7\x4c\xc4\x01\xc4\x4f"
 	"\x3a\x4c\x68\x00\xd0\x28"
@@ -268,7 +268,7 @@ BytePattern NinSnesScanner::ptnIncSectionPtrYSFR(
 //1243: ae        pop   a                 ; read section word into YA
 //1244: f0 27     beq   $126d             ; branch if $00xx
 //1246: 7a 17     addw  ya,$17            ; convert to real address
-BytePattern NinSnesScanner::ptnIncSectionPtrYs4(
+BytePattern WhittakerSnesScanner::ptnIncSectionPtrYs4(
 	"\x8d\x00\xf7\x35\x0d\x3a\x35\x2d"
 	"\xf7\x35\x3a\x35\xfd\xae\xf0\x27"
 	"\x7a\x17"
@@ -296,7 +296,7 @@ BytePattern NinSnesScanner::ptnIncSectionPtrYs4(
 //09cd: f7 8c     mov   a,($8c)+y
 //09cf: c5 2c 05  mov   $052c,a
 //09d2: ee        pop   y
-BytePattern NinSnesScanner::ptnInitSectionPtrHE4(
+BytePattern WhittakerSnesScanner::ptnInitSectionPtrHE4(
 	"\x6d\xc4\x8c\x8f\x20\x8d\x60\x84"
 	"\x8c\xc4\x8c\xe8\x00\x84\x8d\xc4"
 	"\x8d\x8d\x00\xf7\x8c\xfc\xc5\x2b"
@@ -324,7 +324,7 @@ BytePattern NinSnesScanner::ptnInitSectionPtrHE4(
 // 07dc: f6 ac 07  mov   a,$07ac+y
 // 07df: fd        mov   y,a
 // 07e0: f0 03     beq   $07e5
-BytePattern NinSnesScanner::ptnJumpToVcmdCTOW(
+BytePattern WhittakerSnesScanner::ptnJumpToVcmdCTOW(
 	"\x80\xa8\xe0\x1c\xfd\xf6\x6d\x07"
 	"\x2d\xf6\x6c\x07\x2d\xdd\x5c\xfd"
 	"\xf6\xac\x07\xfd\xf0\x03"
@@ -344,7 +344,7 @@ BytePattern NinSnesScanner::ptnJumpToVcmdCTOW(
 //10d6: f6 db 10  mov   a,$10db+y
 //10d9: 2d        push  a
 //10da: 6f        ret
-BytePattern NinSnesScanner::ptnJumpToVcmdYSFR(
+BytePattern WhittakerSnesScanner::ptnJumpToVcmdYSFR(
 	"\x28\x1f\x1c\xfd\xf6\xdc\x10\x2d"
 	"\xf6\xdb\x10\x2d\x6f"
 	,
@@ -363,7 +363,7 @@ BytePattern NinSnesScanner::ptnJumpToVcmdYSFR(
 //0be1: f6 46 06  mov   a,$0646+y
 //0be4: 2d        push  a
 //0be5: 6f        ret
-BytePattern NinSnesScanner::ptnJumpToVcmdYs4(
+BytePattern WhittakerSnesScanner::ptnJumpToVcmdYs4(
 	"\x80\xa8\xe0\x1c\xfd\xf6\x47\x06"
 	"\x2d\xf6\x46\x06\x2d\x6f"
 	,
@@ -378,7 +378,7 @@ BytePattern NinSnesScanner::ptnJumpToVcmdYs4(
 //0b2d: cb 00     mov   $00,y
 //0b2f: fd        mov   y,a
 //0b30: f6 eb 0b  mov   a,$0beb+y ; read vcmd length
-BytePattern NinSnesScanner::ptnReadVcmdLengthYSFR(
+BytePattern WhittakerSnesScanner::ptnReadVcmdLengthYSFR(
 	"\x80\xa8\xe0\xcb\x00\xfd\xf6\xeb"
 	"\x0b"
 	,
@@ -395,7 +395,7 @@ BytePattern NinSnesScanner::ptnReadVcmdLengthYSFR(
 //0ce2: ae        pop   a
 //0ce3: 80        setc
 //0ce4: 96 17 0c  adc   a,$0c17+y
-BytePattern NinSnesScanner::ptnReadVcmdLengthYs4(
+BytePattern WhittakerSnesScanner::ptnReadVcmdLengthYs4(
 	"\x68\xe0\x90\x0e\x6d\xfd\xae\x80"
 	"\x96\x17\x0c"
 	,
@@ -418,7 +418,7 @@ BytePattern NinSnesScanner::ptnReadVcmdLengthYs4(
 //0a10: 60        clrc
 //0a11: 95 01 01  adc   a,$0101+x         ;   add volume delta of repeat vcmd
 //0a14: d5 10 02  mov   $0210+x,a         ;   set per-note vol from low nybble
-BytePattern NinSnesScanner::ptnDispatchNoteGD3(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteGD3(
 	"\x2d\x9f\x28\x07\xfd\xf6\xe5\x10"
 	"\xd5\x01\x02\xae\x28\x0f\xfd\xf6"
 	"\xed\x10\x60\x95\x01\x01\xd5\x10"
@@ -444,7 +444,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteGD3(
 //0a55: fd        mov   y,a
 //0a56: f6 80 1d  mov   a,$1d80+y
 //0a59: d5 40 06  mov   $0640+x,a         ; set dur% from high nybble
-BytePattern NinSnesScanner::ptnDispatchNoteYSFR(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteYSFR(
 	"\x28\x0f\xfd\xf6\x0b\x0c\xd5\x90"
 	"\x03\xae\x5c\x5c\x5c\x5c\xfd\xf6"
 	"\x80\x1d\xd5\x40\x06"
@@ -469,7 +469,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteYSFR(
 //0ae7: 30 07     bmi   $0af0             ; process it, if < $80
 //0ae9: 1c        asl   a                 ; a *= 2
 //0aea: d5 10 02  mov   $0210+x,a         ; set per-note volume (velocity)
-BytePattern NinSnesScanner::ptnDispatchNoteLEM(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteLEM(
 	"\x30\x1e\xd5\x00\x02\x3f\x85\x0b"
 	"\x30\x16\xc4\x11\x4b\x11\x1c\x84"
 	"\x11\xd5\x01\x02\x3f\x85\x0b\x30"
@@ -498,7 +498,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteLEM(
 //0642: f6 00 ff  mov   a,$ff00+y
 //0645: d5 10 02  mov   $0210+x,a
 //0648: 5f 22 07  jmp   $0722
-BytePattern NinSnesScanner::ptnDispatchNoteFE3(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteFE3(
 	"\x68\x40\xb0\x0c\x28\x3f\xfd\xf6"
 	"\x00\xff\xd5\x01\x02\x5f\x43\x07"
 	"\x28\x3f\xfd\xf6\x00\xff\xd5\x10"
@@ -522,7 +522,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteFE3(
 //093c: d5 11 02  mov   $0211+x,a         ;   00-3f - set dur%
 //093f: 2f ee     bra   $092f             ;   check more bytes
 //0941: d5 20 02  mov   $0220+x,a         ;   40-7f - set vel
-BytePattern NinSnesScanner::ptnDispatchNoteFE4(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteFE4(
 	"\x01\x30\x13\x68\x40\x28\x3f\xfd"
 	"\xf6\x38\x10\xb0\x05\xd5\x11\x02"
 	"\x2f\xee\xd5\x20\x02"
@@ -545,7 +545,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteFE4(
 //0bca: fd        mov   y,a
 //0bcb: f6 d1 17  mov   a,$17d1+y
 //0bce: d5 1a 03  mov   $031a+x,a
-BytePattern NinSnesScanner::ptnDispatchNoteYs4(
+BytePattern WhittakerSnesScanner::ptnDispatchNoteYs4(
 	"\x2d\x9f\x28\x07\xfd\xf6\xc9\x17"
 	"\xd4\x76\xae\x28\x0f\xfd\xf6\xd1"
 	"\x17\xd5\x1a\x03"
@@ -566,7 +566,7 @@ BytePattern NinSnesScanner::ptnDispatchNoteYs4(
 //0e10: 3f 16 0e  call  $0e16
 //0e13: d4 d1     mov   $d1+x,a           ; VOL(R)
 //0e15: 6f        ret
-BytePattern NinSnesScanner::ptnWriteVolumeKSS(
+BytePattern WhittakerSnesScanner::ptnWriteVolumeKSS(
 	"\x3f\x16\x0e\xd4\xd0\x8d\x14\xe8"
 	"\x00\x9a\x1c\xda\x1c\x3f\x16\x0e"
 	"\xd4\xd1\x6f"
@@ -593,7 +593,7 @@ BytePattern NinSnesScanner::ptnWriteVolumeKSS(
 //; vcmd fe
 //1afe: c4 1b     mov   $1b,a
 //1b00: 5f 50 17  jmp   $1750
-BytePattern NinSnesScanner::ptnRD1VCmd_FA_FE(
+BytePattern WhittakerSnesScanner::ptnRD1VCmd_FA_FE(
 	"\xc4\x5f\x6f\x3f\xf1\x18\x6f\xbc"
 	"\xd5\x00\x04\x6f\xbc\xc4\x1b\x5f"
 	"\x50\x17"
@@ -621,7 +621,7 @@ BytePattern NinSnesScanner::ptnRD1VCmd_FA_FE(
 //10a8: d7 14     mov   ($14)+y,a         ; ADSR(2)
 //10aa: ae        pop   a
 //10ab: 5f fe 09  jmp   $09fe             ; set instrument
-BytePattern NinSnesScanner::ptnRD2VCmdInstrADSR(
+BytePattern WhittakerSnesScanner::ptnRD2VCmdInstrADSR(
 	"\x2d\x8d\x06\xcf\xda\x14\x60\x98"
 	"\x00\x14\x98\x5e\x15\x3f\xf4\x09"
 	"\x8d\x01\xd7\x14\x3f\xf4\x09\x8d"
@@ -650,7 +650,7 @@ BytePattern NinSnesScanner::ptnRD2VCmdInstrADSR(
 //0896: 90 02     bcc   $089a
 //0898: bb 23     inc   $23+x
 //089a: 6f        ret
-BytePattern NinSnesScanner::ptnIntelliVCmdFA(
+BytePattern WhittakerSnesScanner::ptnIntelliVCmdFA(
 	"\x30\xdd\xf4\x22\xc4\xb6\xf4\x23"
 	"\xc4\xb7\xe8\x04\xcf\x60\x94\x22"
 	"\xd4\x22\x90\x02\xbb\x23\x6f"
@@ -678,7 +678,7 @@ BytePattern NinSnesScanner::ptnIntelliVCmdFA(
 //0aaf: dd        mov   a,y
 //0ab0: d5 90 03  mov   $0390+x,a         ; save per-instrument tuning
 //0ab3: ae        pop   a
-BytePattern NinSnesScanner::ptnInstrVCmdGD3(
+BytePattern WhittakerSnesScanner::ptnInstrVCmdGD3(
 	"\xd5\x11\x02\xfd\x30\x15\x2d\x4d"
 	"\x5d\xf5\x73\x0a\xfd\xf5\x87\x0a"
 	"\xce\xd5\x91\x03\xdd\xd5\x90\x03"
@@ -704,7 +704,7 @@ BytePattern NinSnesScanner::ptnInstrVCmdGD3(
 //0453: cf        mul   ya
 //0454: 7a 00     addw  ya,$00
 //0456: da 00     movw  $00,ya
-BytePattern NinSnesScanner::ptnLoadInstrTableAddressSOS(
+BytePattern WhittakerSnesScanner::ptnLoadInstrTableAddressSOS(
 	"\x8f\x00\x00\x8f\x3e\x01\x68\x00"
 	"\x10\x06\x80\xa8\xca\x60\x84\x40"
 	"\x8d\x06\xcf\x7a\x00\xda\x00"
@@ -729,7 +729,7 @@ BytePattern NinSnesScanner::ptnLoadInstrTableAddressSOS(
 //0827: cf        mul   ya
 //0828: 7a 00     addw  ya,$00
 //082a: da 00     movw  $00,ya
-BytePattern NinSnesScanner::ptnLoadInstrTableAddressCTOW(
+BytePattern WhittakerSnesScanner::ptnLoadInstrTableAddressCTOW(
 	"\x2d\x78\x00\x04\xd0\x08\x8f\x00"
 	"\x00\x8f\x3c\x01\x2f\x06\x8f\x00"
 	"\x00\x8f\x3e\x01\xae\x8d\x06\xcf"
@@ -753,7 +753,7 @@ BytePattern NinSnesScanner::ptnLoadInstrTableAddressCTOW(
 //0889: 8f 1e 49  mov   $49,#$1e          ; song list = $1e00
 //088c: 8f 00 4a  mov   $4a,#$00
 //088f: 8f 1f 4b  mov   $4b,#$1f
-BytePattern NinSnesScanner::ptnLoadInstrTableAddressYSFR(
+BytePattern WhittakerSnesScanner::ptnLoadInstrTableAddressYSFR(
 	"\x8d\x5d\xe8\x1b\xc4\x45\x3f\x99"
 	"\x10\x8f\x00\x46\x8f\x1c\x47\x8f"
 	"\x00\x48\x8f\x1e\x49\x8f\x00\x4a"
@@ -770,7 +770,7 @@ BytePattern NinSnesScanner::ptnLoadInstrTableAddressYSFR(
 //11a6: 8d 5d     mov   y,#$5d
 //11a8: e8 3a     mov   a,#$3a
 //11aa: 3f 0b 05  call  $050b             ; set DIR
-BytePattern NinSnesScanner::ptnSetDIRCTOW(
+BytePattern WhittakerSnesScanner::ptnSetDIRCTOW(
 	"\x8d\x5d\xe8\x3a\x3f\x0b\x05"
 	,
 	"xxx?x??"
@@ -781,7 +781,7 @@ BytePattern NinSnesScanner::ptnSetDIRCTOW(
 //0335: e8 0f     mov   a,#$0f
 //0337: 8d 5d     mov   y,#$5d
 //0339: 4f 1e     pcall $1e               ; set DIR to $0f00
-BytePattern NinSnesScanner::ptnSetDIRTS(
+BytePattern WhittakerSnesScanner::ptnSetDIRTS(
 	"\xe8\x0f\x8d\x5d\x4f\x1e"
 	,
 	"x?xxx?"
@@ -810,7 +810,7 @@ BytePattern NinSnesScanner::ptnSetDIRTS(
 //07f9: a8 ca     sbc   a,#$ca            ;   ca-dd => 00-15
 //07fb: 60        clrc
 //07fc: 84 39     adc   a,$39             ; add perc patch base
-BytePattern NinSnesScanner::ptnInstrVCmdACTR(
+BytePattern WhittakerSnesScanner::ptnInstrVCmdACTR(
 	"\xd5\x15\x02\xeb\x34\xd0\x0f\xfd"
 	"\x10\x06\x80\xa8\xca\x60\x84\x5f"
 	"\x60\x85\xff\x11\x2f\x09\xfd\x10"
@@ -847,7 +847,7 @@ BytePattern NinSnesScanner::ptnInstrVCmdACTR(
 //08ad: a8 ca     sbc   a,#$ca
 //08af: 60        clrc
 //08b0: 84 39     adc   a,$39
-BytePattern NinSnesScanner::ptnInstrVCmdACTR2(
+BytePattern WhittakerSnesScanner::ptnInstrVCmdACTR2(
 	"\xd5\x15\x02\xeb\x34\xd0\x11\xfd"
 	"\x10\x06\x80\xa8\xca\x60\x84\x5f"
 	"\x4d\x5d\xf5\xe0\x0f\xce\x2f\x09"
@@ -884,7 +884,7 @@ BytePattern NinSnesScanner::ptnInstrVCmdACTR2(
 //0a26: a8 ca     sbc   a,#$ca            ;   ca-dd => 00-15
 //0a28: 60        clrc
 //0a29: 95 00 ff  adc   a,$ff00+x         ; add perc patch base
-BytePattern NinSnesScanner::ptnInstrVCmdTS(
+BytePattern WhittakerSnesScanner::ptnInstrVCmdTS(
 	"\xd5\x17\x02\xd0\x12\xfd\x10\x07"
 	"\x80\xa8\xca\x60\x95\x00\xff\x4d"
 	"\x5d\xf5\xab\xff\xce\x2f\x0a\xfd"
@@ -899,18 +899,18 @@ BytePattern NinSnesScanner::ptnInstrVCmdTS(
 	,
 	33);
 
-void NinSnesScanner::scan(RawFile *file, void *info) {
+void WhittakerSnesScanner::scan(RawFile *file, void *info) {
   size_t nFileLength = file->size();
   if (nFileLength == 0x10000) {
-    searchForNinSnesFromARAM(file);
+    searchForWhittakerSnesFromARAM(file);
   }
   else {
     // Search from ROM unimplemented
   }
 }
 
-void NinSnesScanner::searchForNinSnesFromARAM(RawFile *file) {
-  NinSnesVersion version = NINSNES_NONE;
+void WhittakerSnesScanner::searchForWhittakerSnesFromARAM(RawFile *file) {
+  WhittakerSnesVersion version = NINSNES_NONE;
 
   std::string basefilename = file->stem();
   std::string name = file->tag.hasTitle() ? file->tag.title : basefilename;
@@ -1578,7 +1578,7 @@ void NinSnesScanner::searchForNinSnesFromARAM(RawFile *file) {
     addrSongStart += konamiBaseAddress;
   }
 
-  NinSnesSeq *newSeq = new NinSnesSeq(file, version, addrSongStart, 0, volumeTable, durRateTable, name);
+  WhittakerSnesSeq *newSeq = new WhittakerSnesSeq(file, version, addrSongStart, 0, volumeTable, durRateTable, name);
   newSeq->konamiBaseAddress = konamiBaseAddress;
   newSeq->quintetBGMInstrBase = quintetBGMInstrBase;
   newSeq->quintetAddrBGMInstrLookup = quintetAddrBGMInstrLookup;
@@ -1672,7 +1672,7 @@ void NinSnesScanner::searchForNinSnesFromARAM(RawFile *file) {
     }
   }
 
-  NinSnesInstrSet *newInstrSet = new NinSnesInstrSet(file, version, addrInstrTable, spcDirAddr);
+  WhittakerSnesInstrSet *newInstrSet = new WhittakerSnesInstrSet(file, version, addrInstrTable, spcDirAddr);
   newInstrSet->konamiTuningTableAddress = konamiTuningTableAddress;
   newInstrSet->konamiTuningTableSize = konamiTuningTableSize;
   if (!newInstrSet->loadVGMFile()) {
