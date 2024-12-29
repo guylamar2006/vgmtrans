@@ -3,41 +3,41 @@
  * Licensed under the zlib license,
  * refer to the included LICENSE.txt file
  */
-#include "NinSnesInstr.h"
+#include "WhittakerSnesInstr.h"
 #include "SNESDSP.h"
 #include <spdlog/fmt/fmt.h>
 
 // ****************
-// NinSnesInstrSet
+// WhittakerSnesInstrSet
 // ****************
 
-NinSnesInstrSet::NinSnesInstrSet(RawFile *file,
-                                 NinSnesVersion ver,
+WhittakerSnesInstrSet::WhittakerSnesInstrSet(RawFile *file,
+                                 WhittakerSnesVersion ver,
                                  uint32_t offset,
                                  uint32_t spcDirAddr,
                                  const std::string &name) :
-    VGMInstrSet(NinSnesFormat::name, file, offset, 0, name), version(ver),
+    VGMInstrSet(WhittakerSnesFormat::name, file, offset, 0, name), version(ver),
     spcDirAddr(spcDirAddr),
     konamiTuningTableAddress(0),
     konamiTuningTableSize(0) {
 }
 
-NinSnesInstrSet::~NinSnesInstrSet() {
+WhittakerSnesInstrSet::~WhittakerSnesInstrSet() {
 }
 
-bool NinSnesInstrSet::parseHeader() {
+bool WhittakerSnesInstrSet::parseHeader() {
   return true;
 }
 
-bool NinSnesInstrSet::parseInstrPointers() {
+bool WhittakerSnesInstrSet::parseInstrPointers() {
   uint8_t instr_max = 0x7f;
   if (version == NINSNES_HUMAN) {
-    instr_max = 0x200 / NinSnesInstr::expectedSize(version);
+    instr_max = 0x200 / WhittakerSnesInstr::expectedSize(version);
   }
 
   usedSRCNs.clear();
   for (int instr = 0; instr <= instr_max; instr++) {
-    uint32_t instrItemSize = NinSnesInstr::expectedSize(version);
+    uint32_t instrItemSize = WhittakerSnesInstr::expectedSize(version);
     uint32_t addrInstrHeader = dwOffset + (instrItemSize * instr);
     if (addrInstrHeader + instrItemSize > 0x10000) {
       return false;
@@ -78,10 +78,10 @@ bool NinSnesInstrSet::parseInstrPointers() {
       // example: Yoshi's Island - Bowser (ff ff ff ff)
       continue;
     }
-    if (!NinSnesInstr::isValidHeader(this->rawFile(), version, addrInstrHeader, spcDirAddr, false)) {
+    if (!WhittakerSnesInstr::isValidHeader(this->rawFile(), version, addrInstrHeader, spcDirAddr, false)) {
       break;
     }
-    if (!NinSnesInstr::isValidHeader(this->rawFile(), version, addrInstrHeader, spcDirAddr, true)) {
+    if (!WhittakerSnesInstr::isValidHeader(this->rawFile(), version, addrInstrHeader, spcDirAddr, true)) {
       continue;
     }
 
@@ -96,7 +96,7 @@ bool NinSnesInstrSet::parseInstrPointers() {
       usedSRCNs.push_back(srcn);
     }
 
-    NinSnesInstr *newInstr = new NinSnesInstr(
+    WhittakerSnesInstr *newInstr = new WhittakerSnesInstr(
       this, version, addrInstrHeader, instr >> 7, instr & 0x7f,
       spcDirAddr, fmt::format("Instrument {}", instr));
     newInstr->konamiTuningTableAddress = konamiTuningTableAddress;
@@ -108,7 +108,7 @@ bool NinSnesInstrSet::parseInstrPointers() {
   }
 
   std::sort(usedSRCNs.begin(), usedSRCNs.end());
-  SNESSampColl *newSampColl = new SNESSampColl(NinSnesFormat::name, this->rawFile(), spcDirAddr, usedSRCNs);
+  SNESSampColl *newSampColl = new SNESSampColl(WhittakerSnesFormat::name, this->rawFile(), spcDirAddr, usedSRCNs);
   if (!newSampColl->loadVGMFile()) {
     delete newSampColl;
     return false;
@@ -118,26 +118,26 @@ bool NinSnesInstrSet::parseInstrPointers() {
 }
 
 // *************
-// NinSnesInstr
+// WhittakerSnesInstr
 // *************
 
-NinSnesInstr::NinSnesInstr(VGMInstrSet *instrSet,
-                           NinSnesVersion ver,
+WhittakerSnesInstr::WhittakerSnesInstr(VGMInstrSet *instrSet,
+                           WhittakerSnesVersion ver,
                            uint32_t offset,
                            uint32_t theBank,
                            uint32_t theInstrNum,
                            uint32_t spcDirAddr,
                            const std::string &name) :
-    VGMInstr(instrSet, offset, NinSnesInstr::expectedSize(ver), theBank, theInstrNum, name), version(ver),
+    VGMInstr(instrSet, offset, WhittakerSnesInstr::expectedSize(ver), theBank, theInstrNum, name), version(ver),
     spcDirAddr(spcDirAddr),
     konamiTuningTableAddress(0),
     konamiTuningTableSize(0) {
 }
 
-NinSnesInstr::~NinSnesInstr() {
+WhittakerSnesInstr::~WhittakerSnesInstr() {
 }
 
-bool NinSnesInstr::loadInstr() {
+bool WhittakerSnesInstr::loadInstr() {
   uint8_t srcn = readByte(dwOffset);
   uint32_t offDirEnt = spcDirAddr + (srcn * 4);
   if (offDirEnt + 4 > 0x10000) {
@@ -146,20 +146,20 @@ bool NinSnesInstr::loadInstr() {
 
   uint16_t addrSampStart = readShort(offDirEnt);
 
-  NinSnesRgn *rgn = new NinSnesRgn(this, version, dwOffset, konamiTuningTableAddress, konamiTuningTableSize);
+  WhittakerSnesRgn *rgn = new WhittakerSnesRgn(this, version, dwOffset, konamiTuningTableAddress, konamiTuningTableSize);
   rgn->sampOffset = addrSampStart - spcDirAddr;
   addRgn(rgn);
 
   return true;
 }
 
-bool NinSnesInstr::isValidHeader(RawFile *file,
-                                 NinSnesVersion version,
+bool WhittakerSnesInstr::isValidHeader(RawFile *file,
+                                 WhittakerSnesVersion version,
                                  uint32_t addrInstrHeader,
                                  uint32_t spcDirAddr,
                                  bool validateSample) {
   
-  auto instrItemSize = NinSnesInstr::expectedSize(version);
+  auto instrItemSize = WhittakerSnesInstr::expectedSize(version);
 
   if (addrInstrHeader + instrItemSize > 0x10000) {
     return false;
@@ -196,7 +196,7 @@ bool NinSnesInstr::isValidHeader(RawFile *file,
   return true;
 }
 
-uint32_t NinSnesInstr::expectedSize(NinSnesVersion version) {
+uint32_t WhittakerSnesInstr::expectedSize(WhittakerSnesVersion version) {
   if (version == NINSNES_EARLIER) {
     return 5;
   }
@@ -206,15 +206,15 @@ uint32_t NinSnesInstr::expectedSize(NinSnesVersion version) {
 }
 
 // ***********
-// NinSnesRgn
+// WhittakerSnesRgn
 // ***********
 
-NinSnesRgn::NinSnesRgn(NinSnesInstr *instr,
-                       NinSnesVersion ver,
+WhittakerSnesRgn::WhittakerSnesRgn(WhittakerSnesInstr *instr,
+                       WhittakerSnesVersion ver,
                        uint32_t offset,
                        uint16_t konamiTuningTableAddress,
                        uint8_t konamiTuningTableSize) :
-    VGMRgn(instr, offset, NinSnesInstr::expectedSize(ver)), version(ver) {
+    VGMRgn(instr, offset, WhittakerSnesInstr::expectedSize(ver)), version(ver) {
   uint8_t srcn = readByte(offset);
   uint8_t adsr1 = readByte(offset + 1);
   uint8_t adsr2 = readByte(offset + 2);
@@ -280,8 +280,8 @@ NinSnesRgn::NinSnesRgn(NinSnesInstr *instr,
   snesConvADSR<VGMRgn>(this, adsr1, adsr2, gain);
 }
 
-NinSnesRgn::~NinSnesRgn() {}
+WhittakerSnesRgn::~WhittakerSnesRgn() {}
 
-bool NinSnesRgn::loadRgn() {
+bool WhittakerSnesRgn::loadRgn() {
   return true;
 }
