@@ -1,24 +1,24 @@
-#include "NinSnesSeq.h"
+#include "WhittakerSnesSeq.h"
 #include "SeqEvent.h"
 #include "ScaleConversion.h"
 
-DECLARE_FORMAT(NinSnes);
+DECLARE_FORMAT(WhittakerSnes);
 
 //  **********
-//  NinSnesSeq
+//  WhittakerSnesSeq
 //  **********
 #define MAX_TRACKS  8
 #define SEQ_PPQN    48
 #define SEQ_KEYOFS  24
 
-NinSnesSeq::NinSnesSeq(RawFile *file,
-                       NinSnesVersion ver,
+WhittakerSnesSeq::WhittakerSnesSeq(RawFile *file,
+                       WhittakerSnesVersion ver,
                        uint32_t offset,
                        uint8_t percussion_base,
                        const std::vector<uint8_t> &theVolumeTable,
                        const std::vector<uint8_t> &theDurRateTable,
                        std::string theName)
-    : VGMMultiSectionSeq(NinSnesFormat::name, file, offset, 0, theName), version(ver),
+    : VGMMultiSectionSeq(WhittakerSnesFormat::name, file, offset, 0, theName), version(ver),
       header(NULL),
       volumeTable(theVolumeTable),
       durRateTable(theDurRateTable),
@@ -37,10 +37,10 @@ NinSnesSeq::NinSnesSeq(RawFile *file,
   loadEventMap();
 }
 
-NinSnesSeq::~NinSnesSeq() {
+WhittakerSnesSeq::~WhittakerSnesSeq() {
 }
 
-void NinSnesSeq::resetVars() {
+void WhittakerSnesSeq::resetVars() {
   VGMMultiSectionSeq::resetVars();
 
   spcPercussionBase = spcPercussionBaseInit;
@@ -57,7 +57,7 @@ void NinSnesSeq::resetVars() {
   }
 }
 
-bool NinSnesSeq::parseHeader() {
+bool WhittakerSnesSeq::parseHeader() {
   setPPQN(SEQ_PPQN);
   nNumTracks = MAX_TRACKS;
 
@@ -97,7 +97,7 @@ bool NinSnesSeq::parseHeader() {
   return true;
 }
 
-bool NinSnesSeq::readEvent(long stopTime) {
+bool WhittakerSnesSeq::readEvent(long stopTime) {
   uint32_t beginOffset = curOffset;
   if (curOffset + 1 >= 0x10000) {
     return false;
@@ -216,9 +216,9 @@ bool NinSnesSeq::readEvent(long stopTime) {
       header->addChild(beginOffset, curOffset - beginOffset, "Section Pointer");
     }
 
-    NinSnesSection *section = (NinSnesSection *) getSectionAtOffset(sectionAddress);
+    WhittakerSnesSection *section = (WhittakerSnesSection *) getSectionAtOffset(sectionAddress);
     if (section == NULL) {
-      section = new NinSnesSection(this, sectionAddress);
+      section = new WhittakerSnesSection(this, sectionAddress);
       if (!section->load()) {
         L_ERROR("Failed to load section");
         return false;
@@ -238,7 +238,7 @@ bool NinSnesSeq::readEvent(long stopTime) {
   return bContinue;
 }
 
-void NinSnesSeq::loadEventMap() {
+void WhittakerSnesSeq::loadEventMap() {
   int statusByte;
 
   if (version == NINSNES_UNKNOWN) {
@@ -564,7 +564,7 @@ void NinSnesSeq::loadEventMap() {
   }
 }
 
-void NinSnesSeq::loadStandardVcmdMap(uint8_t statusByte) {
+void WhittakerSnesSeq::loadStandardVcmdMap(uint8_t statusByte) {
   EventMap[statusByte + 0x00] = EVENT_PROGCHANGE;
   EventMap[statusByte + 0x01] = EVENT_PAN;
   EventMap[statusByte + 0x02] = EVENT_PAN_FADE;
@@ -594,7 +594,7 @@ void NinSnesSeq::loadStandardVcmdMap(uint8_t statusByte) {
   EventMap[statusByte + 0x1a] = EVENT_PERCCUSION_PATCH_BASE;
 }
 
-double NinSnesSeq::getTempoInBPM(uint8_t tempo) {
+double WhittakerSnesSeq::getTempoInBPM(uint8_t tempo) {
   if (tempo != 0) {
     return (double) 60000000 / (SEQ_PPQN * 2000) * ((double) tempo / 256);
   }
@@ -603,7 +603,7 @@ double NinSnesSeq::getTempoInBPM(uint8_t tempo) {
   }
 }
 
-uint16_t NinSnesSeq::convertToAPUAddress(uint16_t offset) {
+uint16_t WhittakerSnesSeq::convertToAPUAddress(uint16_t offset) {
   if (version == NINSNES_KONAMI) {
     return konamiBaseAddress + offset;
   }
@@ -615,20 +615,20 @@ uint16_t NinSnesSeq::convertToAPUAddress(uint16_t offset) {
   }
 }
 
-uint16_t NinSnesSeq::getShortAddress(uint32_t offset) {
+uint16_t WhittakerSnesSeq::getShortAddress(uint32_t offset) {
   return convertToAPUAddress(readShort(offset));
 }
 
 //  **************
-//  NinSnesSection
+//  WhittakerSnesSection
 //  **************
 
-NinSnesSection::NinSnesSection(NinSnesSeq *parentFile, uint32_t offset, uint32_t length)
+WhittakerSnesSection::WhittakerSnesSection(WhittakerSnesSeq *parentFile, uint32_t offset, uint32_t length)
     : VGMSeqSection(parentFile, offset, length) {
 }
 
-bool NinSnesSection::parseTrackPointers() {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+bool WhittakerSnesSection::parseTrackPointers() {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
   uint32_t curOffset = dwOffset;
 
   VGMHeader *header = addHeader(curOffset, 16);
@@ -641,7 +641,7 @@ bool NinSnesSection::parseTrackPointers() {
     uint16_t startAddress = readShort(curOffset);
 
     bool active = ((startAddress & 0xff00) != 0);
-    NinSnesTrack *track;
+    WhittakerSnesTrack *track;
     if (active) {
       startAddress = convertToApuAddress(startAddress);
 
@@ -657,13 +657,13 @@ bool NinSnesSection::parseTrackPointers() {
 
       std::stringstream trackName;
       trackName << "Track " << (trackIndex + 1);
-      track = new NinSnesTrack(this, startAddress, 0, trackName.str());
+      track = new WhittakerSnesTrack(this, startAddress, 0, trackName.str());
 
       numActiveTracks++;
     }
     else {
       // add an inactive track
-      track = new NinSnesTrack(this, curOffset, 2, "NULL");
+      track = new WhittakerSnesTrack(this, curOffset, 2, "NULL");
       track->available = false;
     }
     track->shared = &parentSeq->sharedTrackData[trackIndex];
@@ -683,21 +683,21 @@ bool NinSnesSection::parseTrackPointers() {
   return true;
 }
 
-uint16_t NinSnesSection::convertToApuAddress(uint16_t offset) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+uint16_t WhittakerSnesSection::convertToApuAddress(uint16_t offset) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
   return parentSeq->convertToAPUAddress(offset);
 }
 
-uint16_t NinSnesSection::getShortAddress(uint32_t offset) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+uint16_t WhittakerSnesSection::getShortAddress(uint32_t offset) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
   return parentSeq->getShortAddress(offset);
 }
 
-NinSnesTrackSharedData::NinSnesTrackSharedData() {
+WhittakerSnesTrackSharedData::WhittakerSnesTrackSharedData() {
   resetVars();
 }
 
-void NinSnesTrackSharedData::resetVars(void) {
+void WhittakerSnesTrackSharedData::resetVars(void) {
   loopCount = 0;
   spcTranspose = 0;
 
@@ -712,10 +712,10 @@ void NinSnesTrackSharedData::resetVars(void) {
 }
 
 //  ************
-//  NinSnesTrack
+//  WhittakerSnesTrack
 //  ************
 
-NinSnesTrack::NinSnesTrack(NinSnesSection *parentSection, uint32_t offset, uint32_t length, const std::string &theName)
+WhittakerSnesTrack::WhittakerSnesTrack(WhittakerSnesSection *parentSection, uint32_t offset, uint32_t length, const std::string &theName)
     : SeqTrack(parentSection->parentSeq, offset, length, theName),
       parentSection(parentSection),
       shared(NULL),
@@ -724,7 +724,7 @@ NinSnesTrack::NinSnesTrack(NinSnesSection *parentSection, uint32_t offset, uint3
   bDetermineTrackLengthEventByEvent = true;
 }
 
-void NinSnesTrack::resetVars(void) {
+void WhittakerSnesTrack::resetVars(void) {
   SeqTrack::resetVars();
 
   cKeyCorrection = SEQ_KEYOFS;
@@ -733,12 +733,12 @@ void NinSnesTrack::resetVars(void) {
   }
 }
 
-bool NinSnesTrack::readEvent(void) {
+bool WhittakerSnesTrack::readEvent(void) {
   if (!available) {
     return false;
   }
 
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
   uint32_t beginOffset = curOffset;
   if (curOffset >= 0x10000) {
     return false;
@@ -749,8 +749,8 @@ bool NinSnesTrack::readEvent(void) {
 
   std::stringstream desc;
 
-  NinSnesSeqEventType eventType = (NinSnesSeqEventType) 0;
-  std::map<uint8_t, NinSnesSeqEventType>::iterator pEventType = parentSeq->EventMap.find(statusByte);
+  WhittakerSnesSeqEventType eventType = (WhittakerSnesSeqEventType) 0;
+  std::map<uint8_t, WhittakerSnesSeqEventType>::iterator pEventType = parentSeq->EventMap.find(statusByte);
   if (pEventType != parentSeq->EventMap.end()) {
     eventType = pEventType->second;
   }
@@ -921,7 +921,7 @@ bool NinSnesTrack::readEvent(void) {
       if (parentSeq->version == NINSNES_QUINTET_ACTR) {
         noteNumber += parentSeq->quintetBGMInstrBase;
       }
-      else if (NinSnesFormat::isQuintetVersion(parentSeq->version)) {
+      else if (WhittakerSnesFormat::isQuintetVersion(parentSeq->version)) {
         noteNumber = readByte(parentSeq->quintetAddrBGMInstrLookup + noteNumber);
       }
 
@@ -952,7 +952,7 @@ bool NinSnesTrack::readEvent(void) {
       if (parentSeq->version == NINSNES_QUINTET_ACTR) {
         newProgNum += parentSeq->quintetBGMInstrBase;
       }
-      else if (NinSnesFormat::isQuintetVersion(parentSeq->version)) {
+      else if (WhittakerSnesFormat::isQuintetVersion(parentSeq->version)) {
         newProgNum = readByte(parentSeq->quintetAddrBGMInstrLookup + newProgNum);
       }
 
@@ -1776,18 +1776,18 @@ bool NinSnesTrack::readEvent(void) {
   return bContinue;
 }
 
-uint16_t NinSnesTrack::convertToApuAddress(uint16_t offset) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+uint16_t WhittakerSnesTrack::convertToApuAddress(uint16_t offset) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
   return parentSeq->convertToAPUAddress(offset);
 }
 
-uint16_t NinSnesTrack::getShortAddress(uint32_t offset) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+uint16_t WhittakerSnesTrack::getShortAddress(uint32_t offset) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
   return parentSeq->getShortAddress(offset);
 }
 
-void NinSnesTrack::getVolumeBalance(uint16_t pan, double &volumeLeft, double &volumeRight) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+void WhittakerSnesTrack::getVolumeBalance(uint16_t pan, double &volumeLeft, double &volumeRight) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
 
   uint8_t panIndex = pan >> 8;
   if (parentSeq->version == NINSNES_TOSE) {
@@ -1822,8 +1822,8 @@ void NinSnesTrack::getVolumeBalance(uint16_t pan, double &volumeLeft, double &vo
   }
 }
 
-uint8_t NinSnesTrack::readPanTable(uint16_t pan) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+uint8_t WhittakerSnesTrack::readPanTable(uint16_t pan) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
 
   if (parentSeq->version == NINSNES_TOSE) {
     // no pan table
@@ -1850,8 +1850,8 @@ uint8_t NinSnesTrack::readPanTable(uint16_t pan) {
   return volumeRate;
 }
 
-int8_t NinSnesTrack::calculatePanValue(uint8_t pan, double &volumeScale, bool &reverseLeft, bool &reverseRight) {
-  NinSnesSeq *parentSeq = (NinSnesSeq *) this->parentSeq;
+int8_t WhittakerSnesTrack::calculatePanValue(uint8_t pan, double &volumeScale, bool &reverseLeft, bool &reverseRight) {
+  WhittakerSnesSeq *parentSeq = (WhittakerSnesSeq *) this->parentSeq;
 
   uint8_t panIndex;
   if (parentSeq->version == NINSNES_TOSE) {
