@@ -229,6 +229,35 @@ std::string CPS1OPMInstrSet::generateOPMFile() {
 }
 
 bool CPS1OPMInstrSet::saveAsOPMFile(const std::string &filepath) {
-  auto content = generateOPMFile();
-  pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+    try {
+        // Generate the OPM file content
+        auto content = generateOPMFile();
+
+        // Check if content generation was successful
+        if (content.empty()) {
+            std::cerr << "Error: Content generation failed." << std::endl;
+            return false;
+        }
+
+        // Write the buffer content to the file
+        bool success = pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+
+        // Check if file writing was successful
+        if (!success) {
+            std::cerr << "Error: Failed to write buffer to file." << std::endl;
+            return false;
+        }
+
+        // Operation was successful
+        return true;
+    } catch (const std::exception& e) {
+        // Catch any exceptions and handle accordingly
+        std::cerr << "Exception occurred: " << e.what() << std::endl;
+        return false;
+    } catch (...) {
+        // Catch any other types of errors
+        std::cerr << "Unknown error occurred." << std::endl;
+        return false;
+    }
 }
+
