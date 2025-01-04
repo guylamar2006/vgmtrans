@@ -181,7 +181,7 @@ jobs:
           cmake --preset win-${{ matrix.target }}
 
        - name: "Build project"
-         run: cmake --build --preset win-${{ matrix.target }}-release --target vgmtrans
+         run: cmake --build --preset win-${{ matrix.target }}-debug --target vgmtrans
 
        - name: "Delete empty directories"
          run: Get-ChildItem -Directory -Recurse | Where-Object { $_.GetFileSystemInfos().Count -eq 0 } | Remove-Item -Force -Recurse
