@@ -230,5 +230,9 @@ std::string CPS1OPMInstrSet::generateOPMFile() {
 
 bool CPS1OPMInstrSet::saveAsOPMFile(const std::string &filepath) {
   auto content = generateOPMFile();
-  pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+  if (content.empty()) {
+    return false;
+  }
+  bool success = pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+  return success;
 }
