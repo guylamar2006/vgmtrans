@@ -5,6 +5,7 @@
 #include "OkiAdpcm.h"
 #include "version.h"
 #include "Root.h"
+#include <iostream>
 
 // ******************
 // CPS1SampleInstrSet
@@ -231,8 +232,14 @@ std::string CPS1OPMInstrSet::generateOPMFile() {
 bool CPS1OPMInstrSet::saveAsOPMFile(const std::string &filepath) {
   auto content = generateOPMFile();
   if (content.empty()) {
+    std::cerr << "Error: Generated OPM file content is empty." << std::endl;
     return false;
   }
+  
   bool success = pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+  if (!success) {
+    std::cerr << "Error: Failed to write OPM file to " << filepath << std::endl;
+  }
+
   return success;
-}
+
