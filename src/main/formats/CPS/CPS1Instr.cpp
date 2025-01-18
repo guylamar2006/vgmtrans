@@ -242,4 +242,5 @@ bool CPS1OPMInstrSet::saveAsOPMFile(const std::string &filepath) {
   }
 
   return success;
+}
 
