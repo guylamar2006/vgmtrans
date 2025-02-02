@@ -236,7 +236,8 @@ bool CPS1OPMInstrSet::saveAsOPMFile(const std::string &filepath) {
     return false;
   }
   
-  bool success = pRoot->UI_writeBufferToFile(filepath, reinterpret_cast<uint8_t*>(const_cast<char*>(content.data())), static_cast<uint32_t>(content.size()));
+  const std::vector<uint8_t> buffer(content.begin(), content.end());
+  bool success = pRoot->UI_writeBufferToFile(filepath, buffer.data(), static_cast<uint32_t>(buffer.size()));
   if (!success) {
     std::cerr << "Error: Failed to write OPM file to " << filepath << std::endl;
   }
